@@ -1,0 +1,1 @@
+export enum RoleModulesActions { GetRoleModules = '[RoleModules] Get ROle Modules', GetRoleModulesSuccess = '[RoleModules] Get ROle Modules Success' } export const getRoleModules = createAction(RoleModulesActions.GetRoleModules, props<{}>()); export const getRoleModulesSuccess = createAction(RoleModulesActions.GetRoleModulesSuccess, props<{}>());

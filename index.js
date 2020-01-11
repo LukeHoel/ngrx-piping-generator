@@ -72,18 +72,18 @@ const generate = (event) => {
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
 
     // Set actions
-    document.getElementById("action").innerText = `
+    document.getElementById("action").innerText = js_beautify(`
         export enum ${groupName}Actions {
         ${actionsData.map(generateActionEnum).join(',')}
         }
-    ${actionsData.map(generateAction).join('')}`;
+    ${actionsData.map(generateAction).join('')}`);
 
     // Set effects
-    document.getElementById("effect").innerText = `
+    document.getElementById("effect").innerText = js_beautify(`
         @Injectable()
         export class ${groupName}Effect {
             ${actionsData.map(generateEffect).join('')}
         constructor(private actions$: Actions, private ${groupNameFirstLower}Service: ${groupName}Service) {}
         }
-    `;
+    `);
 };

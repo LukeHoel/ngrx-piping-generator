@@ -1,0 +1,32 @@
+<html>
+
+<head>
+    <link rel="stylesheet" href="index.css" />
+    <script src="index.js"></script>
+</head>
+
+<body>
+    <div>
+        <b>Parameters</b>
+        <div>
+            <label>GroupName</label>
+            <input id="groupName" type="text" value="">
+        </div>
+        <div id="actions">
+        </div>
+        <br>
+        <button onclick="addAction()">Add Action</button>
+        <button onclick="generate()">Generate</button>
+    </div>
+    <div id="results" style="display:none">
+        <b>Results</b>
+        <br>
+        <div>
+            <b>action</b>
+            <br>
+            <textarea id="action"></textarea>
+        </div>
+    </div>
+</body>
+
+</html>

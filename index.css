@@ -7,3 +7,56 @@ input{
     margin: 5px 0 ;
     height: 30px;
 }
+body{
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+}
+hr{
+    width: 100px;
+    border: 0;
+    border-bottom: 1px solid grey;
+    margin-left: 0;
+}
+code{
+    font-size: 12px;
+}
+button{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 4px;
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0);
+    transition: box-shadow .2s ease;
+}
+button:hover{
+    cursor: pointer;
+    box-shadow:inset 0 0 0 99999px rgba(0,0,0,0.1);
+}
+.titleBar{
+    width: 100vw;
+    height: 38px;
+    color: white;
+    background-color: #05f;
+    /* Doing this intead of the regular body margin 0 schenanagins. Because I don't feel like dealing with that */
+    position: relative;
+    left: -8px;
+    top: -8px;
+    display: flex;
+    align-items: center;
+    padding: 5px;
+}
+.buttonPrimary{
+    background-color: #05f;
+    color: white;
+    border: 2px solid #05f;
+}
+.buttonSecondary{
+    background-color: white;
+    color: #05f;
+    border: 2px solid #05f;
+}
+#results{
+    margin-top: 10px;
+}
+.buttonRemove{
+    margin-left: 305px;
+}

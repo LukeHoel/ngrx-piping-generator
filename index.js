@@ -3,6 +3,7 @@ let actionId = 0;
 const addAction = () => {
     const action = document.createElement("div");
     action.innerHTML = `
+        <hr>
         <div>
             <label>Name</label>
             <input id="name" type="text" value="">
@@ -11,7 +12,7 @@ const addAction = () => {
             <label>Description</label>
             <input id="description" type="text" value="">
         </div>
-        <button onclick="removeAction(${actionId})">Remove Action</button>
+        <button class="buttonRemove buttonSecondary" onclick="removeAction(${actionId})">Remove Action</button>
     `;
     action.setAttribute("actionId", actionId);
     document.getElementById("actions").appendChild(action);
@@ -29,11 +30,14 @@ const setActionsData = () => {
     const groupName = document.getElementById("groupName").value;
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
     return actions.map(action => {
-        const name = action.querySelector("#name").value;
-        const actionName = `${name[0].toUpperCase()}${name.substring(1)}${groupName}`
+        const name = _.camelCase(action.querySelector("#name").value);
         const description = action.querySelector("#description").value;
+        if (!name || !description) {
+            return;
+        }
+        const actionName = `${name[0].toUpperCase()}${name.substring(1)}${groupName}`
         return { groupName, groupNameFirstLower, name, actionName, description };
-    });
+    }).filter(action => action);
 }
 
 const generateActionEnum = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
@@ -75,9 +79,13 @@ const generateReducer = ({ groupName, groupNameFirstLower, name, actionName, des
 };
 
 const generate = (event) => {
-    document.getElementById("results").style.display = "block";
     const actionsData = setActionsData();
 
+    document.getElementById("results").style.display = "hidden";
+    if (actionsData.length === 0) {
+        return;
+    }
+    document.getElementById("results").style.display = "block";
     const groupName = document.getElementById("groupName").value;
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
 

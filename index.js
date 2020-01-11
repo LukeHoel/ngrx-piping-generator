@@ -64,6 +64,16 @@ const generateEffect = ({ groupName, groupNameFirstLower, name, actionName, desc
     `
 };
 
+const generateService = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
+    return `${name}${groupName}(): Observable<any> {
+                return null;
+            }`;
+}
+
+const generateReducer = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
+    return `on(${name}${groupName}Action, state => ({ ...state }))`;
+};
+
 const generate = (event) => {
     document.getElementById("results").style.display = "block";
     const actionsData = setActionsData();
@@ -86,4 +96,30 @@ const generate = (event) => {
         constructor(private actions$: Actions, private ${groupNameFirstLower}Service: ${groupName}Service) {}
         }
     `);
+
+    document.getElementById('service').innerText = js_beautify(`
+    @Injectable({
+        providedIn: 'root'
+    })
+    export class ${groupName}Service {
+        constructor(private http: HttpClient) {}
+        ${actionsData.map(generateService).join('')}
+    }`);
+
+    document.getElementById('reducer').innerText = js_beautify(`
+      const roleModulesReducers = createReducer(
+        IInitial${groupName}State,
+        ${actionsData.map(generateReducer).join(',')}
+      );
+      
+      export function ${groupName}Reducer(state: I${groupName}State, action: Action) {
+        return ${groupNameFirstLower}Reducers(state, action);
+      }
+    `);
+
+    document.getElementById('state').innerText = js_beautify(`
+        export interface I${groupName}State {}
+        export const IInitial${groupName}State: I${groupName}State = {};
+    `);
+
 };

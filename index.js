@@ -97,6 +97,7 @@ const generate = (event) => {
         }
     `);
 
+    // Set services
     document.getElementById('service').innerText = js_beautify(`
     @Injectable({
         providedIn: 'root'
@@ -106,6 +107,7 @@ const generate = (event) => {
         ${actionsData.map(generateService).join('')}
     }`);
 
+    // Set reducers
     document.getElementById('reducer').innerText = js_beautify(`
       const roleModulesReducers = createReducer(
         IInitial${groupName}State,
@@ -117,9 +119,19 @@ const generate = (event) => {
       }
     `);
 
+    // Set state
     document.getElementById('state').innerText = js_beautify(`
         export interface I${groupName}State {}
         export const IInitial${groupName}State: I${groupName}State = {};
     `);
 
+    // Set header file names
+    const fileName = (type) => `${_.kebabCase(groupName)}.${type}.ts`;
+    document.getElementById("actionFileName").innerText = fileName("action");
+    document.getElementById("effectFileName").innerText = fileName("effect");
+    document.getElementById("serviceFileName").innerText = fileName("service");
+    document.getElementById("reducerFileName").innerText = fileName("reducer");
+    document.getElementById("stateFileName").innerText = fileName("state");
+    // Apply syntax highlighting
+    document.querySelectorAll('pre code').forEach((block) => hljs.highlightBlock(block));
 };

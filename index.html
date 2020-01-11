@@ -2,7 +2,9 @@
 
 <head>
     <link rel="stylesheet" href="index.css" />
-    <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/styles/vs.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/4.17.15/lodash.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@9.17.1/build/highlight.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.10.2/beautify.js"></script>
     <script src="index.js"></script>
 </head>
@@ -14,8 +16,7 @@
             <label>GroupName</label>
             <input id="groupName" type="text" value="">
         </div>
-        <div id="actions">
-        </div>
+        <div id="actions"></div>
         <br>
         <button onclick="addAction()">Add Action</button>
         <button onclick="generate()">Generate</button>
@@ -24,29 +25,39 @@
         <b>Results</b>
         <br>
         <div>
-            <b>action</b>
+            <b id="actionFileName"></b>
             <br>
-            <pre id="action" class="prettyprint"></pre>
+            <pre>
+                <code id="action"></code>
+            </pre>
         </div>
         <div>
-            <b>effect</b>
+            <b id="effectFileName"></b>
             <br>
-            <pre id="effect" class="prettyprint"></pre>
+            <pre>
+                <code id="effect"></code>
+            </pre>
         </div>
         <div>
-            <b>service</b>
+            <b id="serviceFileName"></b>
             <br>
-            <pre id="service" class="prettyprint"></pre>
+            <pre>
+                <code id="service" ></code>
+            </pre>
         </div>
         <div>
-            <b>reducer</b>
+            <b id="reducerFileName"></b>
             <br>
-            <pre id="reducer" class="prettyprint"></pre>
+            <pre>
+                <code id="reducer"></code>
+            </pre>
         </div>
         <div>
-            <b>state</b>
+            <b id="stateFileName"></b>
             <br>
-            <pre id="state" class="prettyprint"></pre>
+            <pre>
+                <code id="state"></code>
+            </pre>
         </div>
     </div>
 </body>

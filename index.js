@@ -80,7 +80,9 @@ const generateService = ({ groupName, groupNameFirstLower, name, actionName, des
 const generateStateImports = ({ groupName, groupNameFirstLower, name, actionName, description }) => `I${groupName}State, Initial${groupName}State`;
 
 const generateReducer = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
-    return `on(${name}${groupName}Action, state => ({ ...state }))`;
+    return `on(${name}${groupName}Action, state => ({ ...state })),
+    on(${name}${groupName}SuccessAction, state => ({ ...state }))
+    `;
 };
 
 const generate = (event) => {

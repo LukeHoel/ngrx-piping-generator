@@ -28,7 +28,11 @@ const removeAction = (id) => {
 };
 
 const setActionsData = () => {
-    const groupName = pascalCase(document.getElementById("groupName").value);
+    const groupNameRaw = document.getElementById("groupName").value;
+    if(!groupNameRaw){
+	return [];
+    }
+    const groupName = pascalCase(groupNameRaw);
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
     return actions.map(action => {
         const name = _.camelCase(action.querySelector("#name").value);

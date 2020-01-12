@@ -1,5 +1,6 @@
 const actions = [];
 let actionId = 0;
+const pascalCase = (input) => `${input[0].toUpperCase()}${_.camelCase(input).substring(1)}`
 const addAction = () => {
     const action = document.createElement("div");
     action.innerHTML = `
@@ -27,7 +28,7 @@ const removeAction = (id) => {
 };
 
 const setActionsData = () => {
-    const groupName = document.getElementById("groupName").value;
+    const groupName = pascalCase(document.getElementById("groupName").value);
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
     return actions.map(action => {
         const name = _.camelCase(action.querySelector("#name").value);
@@ -48,9 +49,11 @@ const generateActionEnum = ({ groupName, groupNameFirstLower, name, actionName, 
 
 const generateAction = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
     // Enum naming convention
-    return `export const ${name}${groupName} = createAction(${groupName}Actions.${actionName}, props<{}>());
-    export const ${name}${groupName}Success = createAction(${groupName}Actions.${actionName}Success, props<{}>());`;
+    return `export const ${name}${groupName}Action = createAction(${groupName}Actions.${actionName}, props<{}>());
+    export const ${name}${groupName}SuccessAction = createAction(${groupName}Actions.${actionName}Success, props<{}>());`;
 }
+
+const generateActionImports = ({ groupName, groupNameFirstLower, name, actionName, description }) => `${name}${groupName}Action, ${name}${groupName}SuccessAction`;
 
 const generateEffect = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
     return `
@@ -59,7 +62,7 @@ const generateEffect = ({ groupName, groupNameFirstLower, name, actionName, desc
             ofType(${name}${groupName}Action),
             switchMap((action: any) =>
                 this.${groupNameFirstLower}Service.${name}${groupName}().pipe(
-                map(() => ${name}${groupName}SuccessAction()),
+                map(() => ${name}${groupName}SuccessAction({})),
                 catchError(() => EMPTY)
                 )
             )
@@ -74,6 +77,8 @@ const generateService = ({ groupName, groupNameFirstLower, name, actionName, des
             }`;
 }
 
+const generateStateImports = ({ groupName, groupNameFirstLower, name, actionName, description }) => `I${groupName}State, Initial${groupName}State`;
+
 const generateReducer = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
     return `on(${name}${groupName}Action, state => ({ ...state }))`;
 };
@@ -86,11 +91,12 @@ const generate = (event) => {
         return;
     }
     document.getElementById("results").style.display = "block";
-    const groupName = document.getElementById("groupName").value;
+    const groupName = pascalCase(document.getElementById("groupName").value);
     const groupNameFirstLower = `${groupName[0].toLowerCase()}${groupName.substring(1)}`
 
     // Set actions
     document.getElementById("action").innerText = js_beautify(`
+        import { createAction, props } from '@ngrx/store';
         export enum ${groupName}Actions {
         ${actionsData.map(generateActionEnum).join(',')}
         }
@@ -98,6 +104,11 @@ const generate = (event) => {
 
     // Set effects
     document.getElementById("effect").innerText = js_beautify(`
+        import { Injectable } from '@angular/core';
+        import { createEffect, ofType, Actions } from '@ngrx/effects';
+        import { switchMap, map, catchError } from 'rxjs/operators';
+        import { EMPTY } from 'rxjs';
+        import { ${actionsData.map(generateActionImports).join(',')} } from '../actions/${_.kebabCase(groupName)}.action';
         @Injectable()
         export class ${groupName}Effect {
             ${actionsData.map(generateEffect).join('')}
@@ -107,18 +118,24 @@ const generate = (event) => {
 
     // Set services
     document.getElementById('service').innerText = js_beautify(`
-    @Injectable({
-        providedIn: 'root'
-    })
-    export class ${groupName}Service {
-        constructor(private http: HttpClient) {}
-        ${actionsData.map(generateService).join('')}
-    }`);
+        import { Injectable } from '@angular/core';
+        import { Observable } from 'rxjs';
+        import { HttpClient } from '@angular/common/http';
+        @Injectable({
+            providedIn: 'root'
+        })
+        export class ${groupName}Service {
+            constructor(private http: HttpClient) {}
+            ${actionsData.map(generateService).join('')}
+        }`);
 
     // Set reducers
     document.getElementById('reducer').innerText = js_beautify(`
-      const roleModulesReducers = createReducer(
-        IInitial${groupName}State,
+      import { createReducer, on, Action } from '@ngrx/store';
+      import { ${actionsData.map(generateActionImports).join(',')} } from '../actions/${_.kebabCase(groupName)}.action';
+      import { ${actionsData.map(generateStateImports).join(',')} } from '../states/${_.kebabCase(groupName)}.state';
+      const ${groupNameFirstLower}Reducers = createReducer(
+        Initial${groupName}State,
         ${actionsData.map(generateReducer).join(',')}
       );
       
@@ -130,7 +147,7 @@ const generate = (event) => {
     // Set state
     document.getElementById('state').innerText = js_beautify(`
         export interface I${groupName}State {}
-        export const IInitial${groupName}State: I${groupName}State = {};
+        export const Initial${groupName}State: I${groupName}State = {};
     `);
 
     // Set header file names

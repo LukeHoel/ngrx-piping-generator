@@ -47,8 +47,8 @@ const setActionsData = () => {
 
 const generateActionEnum = ({ groupName, groupNameFirstLower, name, actionName, description }) => {
     // Enum naming convention
-    return `${actionName} = '[${groupName}] ${description}',
-            ${actionName}Success = '[${groupName}] ${description} Success'`;
+    return `${actionName} = '[${groupName} component] ${description}',
+            ${actionName}Success = '[${groupName} component] ${description} Success'`;
 }
 
 const generateAction = ({ groupName, groupNameFirstLower, name, actionName, description }) => {

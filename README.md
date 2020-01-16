@@ -4,3 +4,5 @@ This is a boilerplate generator to be used in angular projects using NgRx for st
 NgRx is great, however following the pattern can involve lots of boilerplate, inciting copy-pasting
 
 This is both time consuming and error prone
+## How do I use this?
+- Go to https://lukehoel.github.io/ngrx-piping-generator

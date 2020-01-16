@@ -5,4 +5,7 @@ NgRx is great, however following the pattern can involve lots of boilerplate, in
 
 This is both time consuming and error prone
 ## How do I use this?
-- Go to https://lukehoel.github.io/ngrx-piping-generator
+1. Go to https://lukehoel.github.io/ngrx-piping-generator
+2. Enter the feature name
+3. Add one or more actions
+4. Generate the boilerplate

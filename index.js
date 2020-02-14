@@ -81,8 +81,6 @@ const generateService = ({ featureName, featureNameFirstLower, name, actionName,
             }`;
 }
 
-const generateStateImports = ({ featureName, featureNameFirstLower, name, actionName, description }) => `I${featureName}State, Initial${featureName}State`;
-
 const generateReducer = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
     return `on(${name}${featureName}Action, state => ({ ...state })),
     on(${name}${featureName}SuccessAction, state => ({ ...state }))
@@ -139,7 +137,7 @@ const generate = (event) => {
     document.getElementById('reducer').innerText = js_beautify(`
       import { createReducer, on, Action } from '@ngrx/store';
       import { ${actionsData.map(generateActionImports).join(',')} } from '../actions/${_.kebabCase(featureName)}.action';
-      import { ${actionsData.map(generateStateImports).join(',')} } from '../states/${_.kebabCase(featureName)}.state';
+      import { I${featureName}State, Initial${featureName}State } from '../states/${_.kebabCase(featureName)}.state';
       const ${featureNameFirstLower}Reducers = createReducer(
         Initial${featureName}State,
         ${actionsData.map(generateReducer).join(',')}

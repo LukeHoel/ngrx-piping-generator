@@ -6,6 +6,7 @@ label{
 input{
     margin: 5px 0 ;
     height: 30px;
+    vertical-align: middle;
 }
 body{
     font-family: 'Roboto', sans-serif;

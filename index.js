@@ -13,6 +13,10 @@ const addAction = () => {
             <label>Action Description</label>
             <input id="description" type="text" value="">
         </div>
+        <div>
+            <label>Inherit feature name</label>
+            <input id="inheritFeatureName" type="checkbox" checked="true" value="">
+        </div>
         <button class="buttonRemove buttonSecondary" onclick="removeAction(${actionId})">Remove Action</button>
     `;
     action.setAttribute("actionId", actionId);
@@ -27,6 +31,8 @@ const removeAction = (id) => {
     actions.splice(index, 1);
 };
 
+const inheritedName = (name, featureName, inheritFeatureName) => `${name}${inheritFeatureName ? featureName : ''}`;
+
 const setActionsData = () => {
     const featureNameRaw = document.getElementById("featureName").value;
     if (!featureNameRaw) {
@@ -37,36 +43,37 @@ const setActionsData = () => {
     return actions.map(action => {
         const name = _.camelCase(action.querySelector("#name").value);
         const description = action.querySelector("#description").value;
+        const inheritFeatureName = action.querySelector("#inheritFeatureName").checked;
         if (!name || !description) {
             return;
         }
-        const actionName = `${name[0].toUpperCase()}${name.substring(1)}${featureName}`
-        return { featureName, featureNameFirstLower, name, actionName, description };
+        const actionName = inheritedName(`${name[0].toUpperCase()}${name.substring(1)}`, featureName, inheritFeatureName)
+        return { featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName };
     }).filter(action => action);
 }
 
-const generateActionEnum = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
+const generateActionEnum = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => {
     // Enum naming convention
     return `${actionName} = '[${featureName} component] ${description}',
             ${actionName}Success = '[${featureName} component] ${description} Success'`;
 }
 
-const generateAction = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
+const generateAction = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => {
     // Enum naming convention
-    return `export const ${name}${featureName}Action = createAction(${featureName}Actions.${actionName}, props<{}>());
-    export const ${name}${featureName}SuccessAction = createAction(${featureName}Actions.${actionName}Success, props<{}>());`;
+    return `export const ${inheritedName(name, featureName, inheritFeatureName)}Action = createAction(${featureName}Actions.${actionName}, props<{}>());
+    export const ${inheritedName(name, featureName, inheritFeatureName)}SuccessAction = createAction(${featureName}Actions.${actionName}Success, props<{}>());`;
 }
 
-const generateActionImports = ({ featureName, featureNameFirstLower, name, actionName, description }) => `${name}${featureName}Action, ${name}${featureName}SuccessAction`;
+const generateActionImports = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => `${inheritedName(name, featureName, inheritFeatureName)}Action, ${inheritedName(name, featureName, inheritFeatureName)}SuccessAction`;
 
-const generateEffect = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
+const generateEffect = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => {
     return `
-        ${name}${featureName}$ = createEffect(() =>
+        ${inheritedName(name, featureName, inheritFeatureName)}$ = createEffect(() =>
             this.actions$.pipe(
-            ofType(${name}${featureName}Action),
+            ofType(${inheritedName(name, featureName, inheritFeatureName)}Action),
             switchMap((action: any) =>
-                this.${featureNameFirstLower}Service.${name}${featureName}().pipe(
-                map(() => ${name}${featureName}SuccessAction({})),
+                this.${featureNameFirstLower}Service.${inheritedName(name, featureName, inheritFeatureName)}().pipe(
+                map(() => ${inheritedName(name, featureName, inheritFeatureName)}SuccessAction({})),
                 catchError(() => EMPTY)
                 )
             )
@@ -75,15 +82,15 @@ const generateEffect = ({ featureName, featureNameFirstLower, name, actionName, 
     `
 };
 
-const generateService = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
-    return `${name}${featureName}(): Observable<any> {
+const generateService = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => {
+    return `${inheritedName(name, featureName, inheritFeatureName)}(): Observable<any> {
                 return null;
             }`;
 }
 
-const generateReducer = ({ featureName, featureNameFirstLower, name, actionName, description }) => {
-    return `on(${name}${featureName}Action, state => ({ ...state })),
-    on(${name}${featureName}SuccessAction, state => ({ ...state }))
+const generateReducer = ({ featureName, featureNameFirstLower, name, actionName, description, inheritFeatureName }) => {
+    return `on(${inheritedName(name, featureName, inheritFeatureName)}Action, state => ({ ...state })),
+    on(${inheritedName(name, featureName, inheritFeatureName)}SuccessAction, state => ({ ...state }))
     `;
 };
 
